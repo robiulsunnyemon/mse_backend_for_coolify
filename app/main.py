@@ -59,14 +59,18 @@ Base.metadata.create_all(bind=engine)
 
 
 
-# .env এ FIREBASE_CREDENTIALS = app/.config/firebase.json
-firebase_cred_path = os.getenv("FIREBASE_CREDENTIALS")
-if not firebase_cred_path:
+# Firebase initialization
+firebase_cred_str = os.getenv("FIREBASE_CREDENTIALS")
+if not firebase_cred_str:
     raise ValueError("❌ FIREBASE_CREDENTIALS not set in .env file!")
 
 try:
-    if not firebase_admin._apps:  # যদি আগে initialize না হয়ে থাকে
-        cred = credentials.Certificate(firebase_cred_path)  # সরাসরি ফাইল path
+    cred_dict = json.loads(firebase_cred_str)
+    # Replace escaped newline with actual newline
+    cred_dict["private_key"] = cred_dict["private_key"].replace("\\n", "\n")
+
+    if not firebase_admin._apps:
+        cred = credentials.Certificate(cred_dict)
         firebase_admin.initialize_app(cred)
         print("✅ Firebase initialized successfully!")
 except Exception as e:
