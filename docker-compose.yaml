@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  # --- Application Service (FastAPI) ---
+  web:
+    build: .
+    # আপনি আপনার Coolify এর জন্য ব্যবহার করা ইমেজটিও এখানে রাখতে পারেন,
+    # যদি না আপনি লোকাল বিল্ড ব্যবহার করেন।
+    # image: robiulsunnyemon/mse_backend_for_coolify:main
+
+    ports:
+      - "8000:8000"
+
+    # এটি সবচেয়ে গুরুত্বপূর্ণ অংশ: কন্টেইনারের ভেতরের পাথের ভ্যালুটি সেট করা।
+    environment:
+      # 1. Firebase Credentials Path
+      - FIREBASE_CREDENTIALS_PATH=app/.config/firebase.json
+
+      # 2. Database URL (Adjusted to your external database URL)
+      # এই ইউআরএল-টি আপনার এক্সটার্নাল ডেটাবেসের সাথে সংযুক্ত করবে।
+      - DATABASE_URL=postgresql://postgres:OsCcDjE8qL6dx5ohZwCvJAI2kdVDJD3E9e0tlSrUf9ydiI4UzbBsNMGrpBX9dFjK@tg04skc4k0kow4kcg8ckwksc:5432/postgres
+
+    # যেহেতু আপনি একটি এক্সটারনাল ডেটাবেস ব্যবহার করছেন, তাই অভ্যন্তরীণ 'db' সার্ভিসের উপর নির্ভরতা সরিয়ে দেওয়া হয়েছে।
+    # depends_on:
+    #   - db
+
+# --- The internal 'db' service and related 'volumes' have been removed. ---

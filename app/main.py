@@ -57,19 +57,21 @@ Base.metadata.create_all(bind=engine)
 
 
 
+# Firebase initialization: Load credentials from file path
 firebase_cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH")
-
 if not firebase_cred_path:
+    # This is the error you were seeing, indicating the variable was missing.
     raise ValueError("❌ FIREBASE_CREDENTIALS_PATH not set in environment!")
 
 try:
-
+    # credentials.Certificate() can take the path to the JSON file directly.
     if not firebase_admin._apps:
         cred = credentials.Certificate(firebase_cred_path)
         firebase_admin.initialize_app(cred)
         print("✅ Firebase initialized successfully from file path!")
 except Exception as e:
-    print("❌ Firebase initialization failed:", e)
+    # This will catch errors if the file exists but the content is invalid.
+    print(f"❌ Firebase initialization failed. Check file path or content: {e}")
     raise
 
 
